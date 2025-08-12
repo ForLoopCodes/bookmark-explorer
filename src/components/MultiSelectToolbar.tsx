@@ -25,7 +25,7 @@ const MultiSelectToolbar: React.FC<MultiSelectToolbarProps> = ({
     getSelectedBookmarks,
     getSelectedFolders,
   } = useSelection();
-  
+
   const { deleteBookmark, deleteFolder } = useBookmarks();
 
   const selectedBookmarks = getSelectedBookmarks();

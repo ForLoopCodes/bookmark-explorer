@@ -157,7 +157,7 @@ const ExplorerPage: React.FC<ExplorerPageProps> = ({ params }) => {
   return (
     <DndProvider backend={HTML5Backend}>
       <MainLayout>
-        <div className="flex-1 overflow-hidden flex flex-col">
+        <div className="flex-1 flex flex-col">
           {/* Header */}
           <div className="bg-white border-b border-gray-200 px-6 py-4">
             <div className="flex items-center justify-between mb-4">
@@ -255,7 +255,7 @@ const ExplorerPage: React.FC<ExplorerPageProps> = ({ params }) => {
           </div>
 
           {/* Content */}
-          <div className="flex-1 overflow-auto p-6">
+          <div className="flex-1 p-6">
             {/* Folders */}
             {((searchResults === null && currentFolderSubfolders.length > 0) ||
               (searchResults !== null && displayFolders.length > 0)) && (

@@ -15,7 +15,12 @@ const MoveToFolderModal: React.FC<MoveToFolderModalProps> = ({
   onClose,
 }) => {
   const { folders, updateBookmark, updateFolder } = useBookmarks();
-  const { getSelectedBookmarks, getSelectedFolders, clearSelection, setSelectionMode } = useSelection();
+  const {
+    getSelectedBookmarks,
+    getSelectedFolders,
+    clearSelection,
+    setSelectionMode,
+  } = useSelection();
   const [selectedFolderId, setSelectedFolderId] = useState<string>("");
 
   const selectedBookmarks = getSelectedBookmarks();
@@ -75,12 +80,14 @@ const MoveToFolderModal: React.FC<MoveToFolderModalProps> = ({
                 <span className="font-medium">Selected items:</span>
                 {selectedBookmarks.length > 0 && (
                   <span className="ml-2">
-                    {selectedBookmarks.length} bookmark{selectedBookmarks.length > 1 ? "s" : ""}
+                    {selectedBookmarks.length} bookmark
+                    {selectedBookmarks.length > 1 ? "s" : ""}
                   </span>
                 )}
                 {selectedFolders.length > 0 && (
                   <span className="ml-2">
-                    {selectedFolders.length} folder{selectedFolders.length > 1 ? "s" : ""}
+                    {selectedFolders.length} folder
+                    {selectedFolders.length > 1 ? "s" : ""}
                   </span>
                 )}
               </div>

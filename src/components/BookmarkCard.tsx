@@ -120,7 +120,11 @@ const BookmarkCard: React.FC<BookmarkCardProps> = ({
             </div>
           </div>
         )}
-        <div className={`flex items-center justify-between ${isSelectionMode ? "ml-8" : ""}`}>
+        <div
+          className={`flex items-center justify-between ${
+            isSelectionMode ? "ml-8" : ""
+          }`}
+        >
           <div className="flex items-center space-x-3 flex-1 min-w-0">
             {/* Favicon or Banner */}
             <div className="flex-shrink-0">
@@ -232,24 +236,24 @@ const BookmarkCard: React.FC<BookmarkCardProps> = ({
             </button>
 
             {showMenu && (
-              <div className="absolute right-0 top-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg z-50 min-w-32">
+              <div className="absolute right-0 top-full mt-1 bg-white border border-gray-200 rounded-md shadow-xl z-[100] min-w-40">
                 <Link
                   href={`/bookmark/${bookmark.id}`}
-                  className="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  className="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 border-b border-gray-100"
                 >
                   <EyeIcon className="w-4 h-4 mr-2" />
                   View Details
                 </Link>
                 <button
                   onClick={handleEdit}
-                  className="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  className="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 border-b border-gray-100"
                 >
                   <PencilIcon className="w-4 h-4 mr-2" />
                   Edit
                 </button>
                 <button
                   onClick={handleOpenLink}
-                  className="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  className="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 border-b border-gray-100"
                 >
                   <ArrowTopRightOnSquareIcon className="w-4 h-4 mr-2" />
                   Open
@@ -274,7 +278,7 @@ const BookmarkCard: React.FC<BookmarkCardProps> = ({
     <div
       ref={drag as any}
       onClick={handleCardClick}
-      className={`bg-white border rounded-lg overflow-hidden hover:shadow-md transition-all relative cursor-pointer ${
+      className={`bg-white border rounded-lg hover:shadow-md transition-all relative cursor-pointer ${
         isDragging ? "opacity-50" : ""
       } ${
         selected
@@ -352,24 +356,24 @@ const BookmarkCard: React.FC<BookmarkCardProps> = ({
             </button>
 
             {showMenu && (
-              <div className="absolute right-0 top-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg z-50 min-w-32">
+              <div className="absolute right-0 top-full mt-1 bg-white border border-gray-200 rounded-md shadow-xl z-[100] min-w-40">
                 <Link
                   href={`/bookmark/${bookmark.id}`}
-                  className="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  className="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 border-b border-gray-100"
                 >
                   <EyeIcon className="w-4 h-4 mr-2" />
                   View Details
                 </Link>
                 <button
                   onClick={handleEdit}
-                  className="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  className="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 border-b border-gray-100"
                 >
                   <PencilIcon className="w-4 h-4 mr-2" />
                   Edit
                 </button>
                 <button
                   onClick={handleOpenLink}
-                  className="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  className="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 border-b border-gray-100"
                 >
                   <ArrowTopRightOnSquareIcon className="w-4 h-4 mr-2" />
                   Open

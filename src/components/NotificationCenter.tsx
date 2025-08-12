@@ -58,7 +58,7 @@ const NotificationCenter: React.FC = () => {
         title: "Welcome back!",
         message:
           "Your bookmarks are now accessible. Navigate freely within the app without re-authentication.",
-        duration: 4000,
+        duration: 500,
       });
     }
   }, [isAuthenticated]);

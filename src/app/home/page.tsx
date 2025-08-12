@@ -19,7 +19,7 @@ const HomePage: React.FC = () => {
   return (
     <DndProvider backend={HTML5Backend}>
       <MainLayout>
-        <div className="flex-1 overflow-auto p-6">
+        <div className="flex-1 p-6">
           <div className="max-w-6xl mx-auto space-y-8">
             {/* Welcome Section */}
             <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
