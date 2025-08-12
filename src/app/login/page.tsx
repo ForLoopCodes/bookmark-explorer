@@ -5,19 +5,19 @@ import PasswordAuth from "@/components/PasswordAuth";
 import useSecureNavigation from "@/hooks/useSecureNavigation";
 import { useEffect } from "react";
 
-export default function Home() {
-  const { isAuthenticated, isInitialized, shouldShowLogin, hasPassword } =
-    useBookmarks();
+export default function LoginPage() {
+  const { isAuthenticated, isInitialized } = useBookmarks();
   const router = useSecureNavigation();
 
   useEffect(() => {
     if (isAuthenticated) {
-      router.push("/home");
-    } else if (hasPassword() && isInitialized) {
-      // If user has a password but isn't authenticated, redirect to login
-      router.push("/login");
+      // Redirect to the page they were trying to access, or home if no redirect path
+      const redirectPath =
+        sessionStorage.getItem("bookmark_explorer_redirect") || "/home";
+      sessionStorage.removeItem("bookmark_explorer_redirect");
+      router.replace(redirectPath);
     }
-  }, [isAuthenticated, hasPassword, isInitialized, router]);
+  }, [isAuthenticated, router]);
 
   // Show loading while initializing
   if (!isInitialized) {
@@ -32,13 +32,8 @@ export default function Home() {
   }
 
   if (isAuthenticated) {
-    return null; // Will redirect to /home
+    return null; // Will redirect
   }
 
-  if (hasPassword() && isInitialized) {
-    return null; // Will redirect to /login
-  }
-
-  // Show password setup for new users
-  return <PasswordAuth showWelcomeBack={shouldShowLogin} />;
+  return <PasswordAuth showWelcomeBack={true} />;
 }

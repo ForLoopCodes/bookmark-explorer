@@ -1,9 +1,11 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { useBookmarks } from '@/contexts/BookmarkContext';
-import Sidebar from './Sidebar';
-import { Bookmark, Folder } from '@/types';
+import React, { useState } from "react";
+import { useBookmarks } from "@/contexts/BookmarkContext";
+import useSecureNavigation from "@/hooks/useSecureNavigation";
+import Sidebar from "./Sidebar";
+import SaveStatus from "./SaveStatus";
+import NotificationCenter from "./NotificationCenter";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -11,17 +13,26 @@ interface MainLayoutProps {
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const { logout } = useBookmarks();
+  const router = useSecureNavigation();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   const handleLogout = () => {
     logout();
+    router.replace("/");
   };
 
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
-      <div className={`${sidebarCollapsed ? 'w-16' : 'w-64'} transition-all duration-300 bg-white shadow-lg`}>
-        <Sidebar collapsed={sidebarCollapsed} onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} />
+      <div
+        className={`${
+          sidebarCollapsed ? "w-16" : "w-64"
+        } transition-all duration-300 bg-white shadow-lg`}
+      >
+        <Sidebar
+          collapsed={sidebarCollapsed}
+          onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
+        />
       </div>
 
       {/* Main Content */}
@@ -34,8 +45,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 Bookmark Explorer
               </h1>
             </div>
-            
+
             <div className="flex items-center space-x-4">
+              <SaveStatus />
               <button
                 onClick={handleLogout}
                 className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors"
@@ -47,10 +59,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         </header>
 
         {/* Content Area */}
-        <main className="flex-1 overflow-hidden">
-          {children}
-        </main>
+        <main className="flex-1 overflow-hidden">{children}</main>
       </div>
+
+      {/* Notification Center */}
+      <NotificationCenter />
     </div>
   );
 };

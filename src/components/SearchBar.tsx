@@ -1,21 +1,21 @@
-'use client';
+"use client";
 
-import React, { useState, useRef, useEffect } from 'react';
-import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { useBookmarks } from '@/contexts/BookmarkContext';
-import { searchBookmarks, getAllCategories, getAllTags } from '@/utils/search';
-import { Bookmark } from '@/types';
+import React, { useState, useRef, useEffect } from "react";
+import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { useBookmarks } from "@/contexts/BookmarkContext";
+import { searchAll, getAllCategories, getAllTags } from "@/utils/search";
+import { Bookmark, Folder } from "@/types";
 
 interface SearchBarProps {
-  onResults: (results: Bookmark[]) => void;
+  onResults: (results: { bookmarks: Bookmark[]; folders: Folder[] }) => void;
   onClear: () => void;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({ onResults, onClear }) => {
-  const { bookmarks } = useBookmarks();
-  const [query, setQuery] = useState('');
+  const { bookmarks, folders } = useBookmarks();
+  const [query, setQuery] = useState("");
   const [showFilters, setShowFilters] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const searchRef = useRef<HTMLDivElement>(null);
 
@@ -24,61 +24,78 @@ const SearchBar: React.FC<SearchBarProps> = ({ onResults, onClear }) => {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node)
+      ) {
         setShowFilters(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   useEffect(() => {
     if (query.trim() || selectedCategory || selectedTags.length > 0) {
       let filteredBookmarks = [...bookmarks];
+      let filteredFolders = [...folders];
 
       // Apply search query
       if (query.trim()) {
-        filteredBookmarks = searchBookmarks(filteredBookmarks, query);
+        const searchResults = searchAll(
+          filteredBookmarks,
+          filteredFolders,
+          query
+        );
+        filteredBookmarks = searchResults.bookmarks;
+        filteredFolders = searchResults.folders;
       }
 
       // Apply category filter
       if (selectedCategory) {
         filteredBookmarks = filteredBookmarks.filter(
-          bookmark => bookmark.category === selectedCategory
+          (bookmark) => bookmark.category === selectedCategory
         );
       }
 
       // Apply tag filters
       if (selectedTags.length > 0) {
-        filteredBookmarks = filteredBookmarks.filter(bookmark =>
-          selectedTags.some(tag => bookmark.tags.includes(tag))
+        filteredBookmarks = filteredBookmarks.filter((bookmark) =>
+          selectedTags.some((tag) => bookmark.tags.includes(tag))
         );
       }
 
-      onResults(filteredBookmarks);
+      onResults({ bookmarks: filteredBookmarks, folders: filteredFolders });
     } else {
       onClear();
     }
-  }, [query, selectedCategory, selectedTags, bookmarks, onResults, onClear]);
+  }, [
+    query,
+    selectedCategory,
+    selectedTags,
+    bookmarks,
+    folders,
+    onResults,
+    onClear,
+  ]);
 
   const clearSearch = () => {
-    setQuery('');
-    setSelectedCategory('');
+    setQuery("");
+    setSelectedCategory("");
     setSelectedTags([]);
     setShowFilters(false);
     onClear();
   };
 
   const toggleTag = (tag: string) => {
-    setSelectedTags(prev =>
-      prev.includes(tag)
-        ? prev.filter(t => t !== tag)
-        : [...prev, tag]
+    setSelectedTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
     );
   };
 
-  const hasActiveFilters = query.trim() || selectedCategory || selectedTags.length > 0;
+  const hasActiveFilters =
+    query.trim() || selectedCategory || selectedTags.length > 0;
 
   return (
     <div ref={searchRef} className="relative">
@@ -110,8 +127,8 @@ const SearchBar: React.FC<SearchBarProps> = ({ onResults, onClear }) => {
           onClick={() => setShowFilters(!showFilters)}
           className={`px-4 py-2 rounded-lg border transition-colors ${
             showFilters || selectedCategory || selectedTags.length > 0
-              ? 'bg-blue-50 border-blue-300 text-blue-700'
-              : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
+              ? "bg-blue-50 border-blue-300 text-blue-700"
+              : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
           }`}
         >
           Filters
@@ -139,7 +156,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onResults, onClear }) => {
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="">All Categories</option>
-                  {categories.map(category => (
+                  {categories.map((category) => (
                     <option key={category} value={category}>
                       {category}
                     </option>
@@ -155,14 +172,14 @@ const SearchBar: React.FC<SearchBarProps> = ({ onResults, onClear }) => {
                   Tags
                 </label>
                 <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
-                  {tags.map(tag => (
+                  {tags.map((tag) => (
                     <button
                       key={tag}
                       onClick={() => toggleTag(tag)}
                       className={`px-3 py-1 rounded-full text-sm transition-colors ${
                         selectedTags.includes(tag)
-                          ? 'bg-blue-100 text-blue-800 border border-blue-300'
-                          : 'bg-gray-100 text-gray-700 border border-gray-300 hover:bg-gray-200'
+                          ? "bg-blue-100 text-blue-800 border border-blue-300"
+                          : "bg-gray-100 text-gray-700 border border-gray-300 hover:bg-gray-200"
                       }`}
                     >
                       {tag}
@@ -176,7 +193,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onResults, onClear }) => {
             {(selectedCategory || selectedTags.length > 0) && (
               <button
                 onClick={() => {
-                  setSelectedCategory('');
+                  setSelectedCategory("");
                   setSelectedTags([]);
                 }}
                 className="text-sm text-gray-600 hover:text-gray-800 transition-colors"

@@ -6,6 +6,8 @@ export interface Bookmark {
   tags: string[];
   category?: string;
   folderId?: string;
+  banner?: string;
+  gallery?: string[];
   createdAt: Date;
   lastVisited?: Date;
 }
@@ -13,6 +15,8 @@ export interface Bookmark {
 export interface Folder {
   id: string;
   name: string;
+  description?: string;
+  banner?: string;
   parentId?: string;
   createdAt: Date;
 }
@@ -26,7 +30,7 @@ export interface PasswordData {
   hash: string;
 }
 
-export type ViewMode = 'grid' | 'list';
+export type ViewMode = "grid" | "list";
 
 export interface BreadcrumbItem {
   id?: string;

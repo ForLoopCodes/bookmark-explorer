@@ -1,29 +1,42 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { useBookmarks } from '@/contexts/BookmarkContext';
+import React, { useState, useEffect } from "react";
+import { useBookmarks } from "@/contexts/BookmarkContext";
 
-const PasswordAuth: React.FC = () => {
+interface PasswordAuthProps {
+  showWelcomeBack?: boolean;
+}
+
+const PasswordAuth: React.FC<PasswordAuthProps> = ({
+  showWelcomeBack = false,
+}) => {
   const { login, setPassword, reset, hasPassword } = useBookmarks();
-  const [password, setPasswordInput] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
+  const [password, setPasswordInput] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
   const [showResetConfirm, setShowResetConfirm] = useState(false);
-  const [isSettingPassword, setIsSettingPassword] = useState(!hasPassword());
+  const [isSettingPassword, setIsSettingPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Check if password is set only on client side
+    setIsSettingPassword(!hasPassword());
+    setIsLoading(false);
+  }, [hasPassword]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     if (isSettingPassword) {
       // Setting new password
       if (password.length < 8) {
-        setError('Password must be at least 8 characters long');
+        setError("Password must be at least 8 characters long");
         return;
       }
 
       if (password !== confirmPassword) {
-        setError('Passwords do not match');
+        setError("Passwords do not match");
         return;
       }
 
@@ -32,7 +45,7 @@ const PasswordAuth: React.FC = () => {
       // Logging in
       const success = login(password);
       if (!success) {
-        setError('Invalid password');
+        setError("Invalid password");
         return;
       }
     }
@@ -42,10 +55,21 @@ const PasswordAuth: React.FC = () => {
     reset();
     setShowResetConfirm(false);
     setIsSettingPassword(true);
-    setPasswordInput('');
-    setConfirmPassword('');
-    setError('');
+    setPasswordInput("");
+    setConfirmPassword("");
+    setError("");
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-2 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
@@ -55,16 +79,29 @@ const PasswordAuth: React.FC = () => {
             Bookmark Explorer
           </h1>
           <p className="text-gray-600">
-            {isSettingPassword 
-              ? 'Set a password to secure your bookmarks' 
-              : 'Enter your password to access your bookmarks'
-            }
+            {isSettingPassword
+              ? "Set a password to secure your bookmarks"
+              : showWelcomeBack
+              ? "For security, please re-enter your password after page refresh"
+              : "Enter your password to access your bookmarks"}
           </p>
+          {showWelcomeBack && !isSettingPassword && (
+            <div className="mt-2 p-3 bg-amber-50 border border-amber-200 rounded-md">
+              <p className="text-sm text-amber-800">
+                <span className="font-medium">🔒 Security Notice:</span> For
+                your protection, we require password re-entry after page
+                refresh, but not during normal navigation within the app.
+              </p>
+            </div>
+          )}
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Password
             </label>
             <input
@@ -80,7 +117,10 @@ const PasswordAuth: React.FC = () => {
 
           {isSettingPassword && (
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="confirmPassword"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Confirm Password
               </label>
               <input
@@ -105,7 +145,7 @@ const PasswordAuth: React.FC = () => {
             type="submit"
             className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
           >
-            {isSettingPassword ? 'Set Password' : 'Login'}
+            {isSettingPassword ? "Set Password" : "Login"}
           </button>
         </form>
 
@@ -128,7 +168,8 @@ const PasswordAuth: React.FC = () => {
                 Confirm Reset
               </h3>
               <p className="text-gray-600 mb-4">
-                This will permanently delete all your bookmarks and folders. This action cannot be undone.
+                This will permanently delete all your bookmarks and folders.
+                This action cannot be undone.
               </p>
               <div className="flex space-x-3">
                 <button
